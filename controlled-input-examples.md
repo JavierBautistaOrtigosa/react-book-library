@@ -126,11 +126,13 @@ NOTES:
 - React state updates are asynchronous.
 - To observe the updated books array, use:
 
-  useEffect(() => {
+```jsx
+useEffect(() => {
   console.log(books);
-  }, [books]);
+}, [books]);
+```
 
-````jsx
+```jsx
 import { useState } from 'react';
 
 function App() {
@@ -162,9 +164,7 @@ function App() {
 export default App;
 ```
 
-
-
-### Reglas Generales y notas:
+### General notes:
 
 - Uncontrolled:
   `<input />`
@@ -176,7 +176,7 @@ export default App;
 useEffect(() => {
   console.log(books);
 }, [books]);
-````
+```
 
 ### Example 5: Multiple Properties (title, author, genre)
 
@@ -348,3 +348,313 @@ function App() {
 
 export default App;
 ```
+
+### Controlled value, UI render, logical operator:
+
+- Formula:
+- condition && <Element />
+
+- If the condition is true...
+- React renders the element
+
+- If the condition is false...
+- React renders nothing
+
+---
+
+- Use case:
+
+- {book.isPublished}
+- The value of this property is null by default, therefore...
+
+- {book.isPublished !== null}
+- React evaluates this expression
+
+- {null !== null}
+- false
+
+- Therefore...
+
+- {false && <p>...</p>}
+
+- Since the left side is false, React stops here
+- It doesn't even need to look at the <p>
+
+- Result:
+- <p>{book.isPublished ? "Published" : "Not Published"}</p>
+- Won't be rendered
+
+---
+
+- Later, the user selects "Yes"
+
+- {book.isPublished}
+- The value is now true
+
+- {book.isPublished !== null}
+- React evaluates:
+
+- {true !== null}
+- true
+
+- Therefore...
+
+- {true && <p>...</p>}
+
+- Since the left side is true, React continues and renders the element
+
+- Result:
+- Output: "Published"
+
+### <select>, ternary operator:
+
+- Formula:
+- condition ? expressionIfTrue : expressionIfFalse
+
+- Read it as:
+- "If this condition is true, use this value.
+- Otherwise, use the other value."
+
+---
+
+- Use case:
+
+value={
+book.isPublished === null
+? ""
+: String(book.isPublished)
+}
+
+- React needs to know which option should appear selected
+
+- To decide that, it first checks:
+
+- {book.isPublished === null}
+
+---
+
+- Initial render:
+
+- {book.isPublished}
+- The value is null by default
+
+- React evaluates:
+
+- {null === null}
+- true
+
+- Therefore...
+
+- value = ""
+
+- React now looks for:
+
+- <option value="">
+
+- Match found:
+
+- <option value="">Select an option</option>
+
+- Result:
+- "Select an option" appears in the UI
+
+---
+
+- User selects "Yes"
+
+- setBook({ isPublished: true })
+
+- React renders again
+
+- This time:
+
+- {book.isPublished === null}
+
+- becomes:
+
+- {true === null}
+
+- false
+
+- Therefore...
+
+- value = String(book.isPublished)
+
+- value = String(true)
+
+- value = "true"
+
+- React now looks for:
+
+- <option value="true">
+
+- Match found:
+
+- <option value="true">Yes</option>
+
+- Result:
+- "Yes" appears as the selected option
+
+### event object:
+
+/*
+Note - Event Object (e)
+
+- React automatically provides an event object whenever an event occurs.
+
+- Common examples:
+
+onChange={(e) => {}}
+onClick={(e) => {}}
+onSubmit={(e) => {}}
+onKeyDown={(e) => {}}
+
+- Rule:
+
+- If I need information about the event...
+- I must receive the event object:
+
+const handleSomething = (e) => {}
+
+- If I don't need anything from the event...
+- I can omit it:
+
+const handleSomething = () => {}
+
+---
+
+Note - Most Common Event Properties
+
+- e.target.value
+
+- Use case:
+- <input>
+- <select>
+- <textarea>
+  
+
+- Purpose:
+- Read the current value entered or selected by the user
+
+- Example:
+
+const handleChange = (e) => {
+const value = e.target.value;
+};
+
+---
+
+- e.target.checked
+
+- Use case:
+- <input type="checkbox" />
+
+- Purpose:
+- Read whether the checkbox is checked
+
+- Returns:
+
+true
+false
+
+- Example:
+
+const handleCheckboxChange = (e) => {
+const isChecked = e.target.checked;
+};
+
+---
+
+- e.key
+
+- Use case:
+- Keyboard events
+
+- Purpose:
+- Determine which key was pressed
+
+- Examples:
+
+'Enter'
+'Escape'
+'ArrowUp'
+'ArrowDown'
+
+- Example:
+
+const handleKeyDown = (e) => {
+console.log(e.key);
+};
+
+---
+
+- e.target
+
+- Purpose:
+- Reference the HTML element that triggered the event
+
+- Example:
+
+const handleChange = (e) => {
+console.log(e.target);
+};
+
+---
+
+Note - Most Common Event Methods
+
+- e.preventDefault()
+
+- Purpose:
+- Prevent the browser's default behavior
+
+- Common use case:
+- Forms
+
+- Example:
+
+const handleSubmit = (e) => {
+e.preventDefault();
+};
+
+- Read it as:
+
+- "Don't do what the browser normally does."
+- "Let React handle it instead."
+
+---
+
+- e.stopPropagation()
+
+- Purpose:
+- Stop the event from bubbling to parent elements
+
+- Example:
+
+const handleClick = (e) => {
+e.stopPropagation();
+};
+
+- Read it as:
+
+- "Handle the event here."
+- "Don't notify parent elements."
+
+---
+
+Note - React Beginner Toolkit
+
+- Properties:
+
+e.target.value
+e.target.checked
+e.key
+
+- Methods:
+
+e.preventDefault()
+e.stopPropagation()
+
+- If you master these five...
+- You'll be able to build most forms and user interactions in React.
+  */
